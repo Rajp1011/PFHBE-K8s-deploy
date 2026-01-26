@@ -66,13 +66,13 @@ Images may be:
 
 ---
 
-## 4. Registry Authentication (If Images Are Private)
+## 4. Registry Authentication (Images Are Private)
 
 Create a GitHub token **on your own account** with:
 
 * `read:packages`
 
-Then create a Kubernetes pull secret:
+Then create a Kubernetes pull secret: [The secret must be created in the same namespace where you deploy.]
 
 ```bash
 kubectl create secret docker-registry ghcr-pull-secret \
@@ -82,11 +82,10 @@ kubectl create secret docker-registry ghcr-pull-secret \
   --docker-email=<your-email>
 ```
 
-Ensure all Deployments and Jobs reference:
+Verify the secret exists
 
-```yaml
-imagePullSecrets:
-- name: ghcr-pull-secret
+```bash
+kubectl get secret ghcr-pull-secret
 ```
 
 > ⚠️ Do NOT use or share another person’s PAT.
@@ -211,22 +210,3 @@ minikube service ge-web
 | PVC Pending      | StorageClass mismatch             |
 
 ---
-
-## 11. Create the Kubernetes ImagePullSecret (One-Time)
-
-The secret must be created in the same namespace where you deploy.
-
-```bash
-kubectl delete secret ghcr-pull-secret --ignore-not-found
-kubectl create secret docker-registry ghcr-pull-secret \
-  --docker-server=ghcr.io \
-  --docker-username=<their-github-username> \
-  --docker-password=<their-github-PAT> \
-  --docker-email=<their-email>
-```
-
-### Verify the secret exists
-
-```bash
-kubectl get secret ghcr-pull-secret
-```
