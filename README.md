@@ -211,3 +211,22 @@ minikube service ge-web
 | PVC Pending      | StorageClass mismatch             |
 
 ---
+
+## 11. Create the Kubernetes ImagePullSecret (One-Time)
+
+The secret must be created in the same namespace where you deploy.
+
+```bash
+kubectl delete secret ghcr-pull-secret --ignore-not-found
+kubectl create secret docker-registry ghcr-pull-secret \
+  --docker-server=ghcr.io \
+  --docker-username=<their-github-username> \
+  --docker-password=<their-github-PAT> \
+  --docker-email=<their-email>
+```
+
+### Verify the secret exists
+
+```bash
+kubectl get secret ghcr-pull-secret
+```
