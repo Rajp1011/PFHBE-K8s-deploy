@@ -22,7 +22,7 @@ These images already contain:
 
 ### Kubernetes Manifests
 
-* `ge-service-shards.yaml` (GE Service deployments + services)
+* `ge-service.yaml` (GE Service deployments + services)
 * `ge-web.yaml` (Web deployment + service)
 * `ge-config.yaml` (Job to seed PVC)
 * `ge-service-pvc.yaml` (PersistentVolumeClaim)
@@ -139,18 +139,25 @@ If Redis is unavailable, GE Service pods will fail startup.
 Apply manifests **in this exact order**:
 
 ```bash
-kubectl apply -f ge-service-pvc.yaml
+kubectl apply -f ge-pvc.yaml
 
+kubectl delete job ge-config --ignore-not-found
 kubectl apply -f ge-config.yaml
 kubectl wait --for=condition=complete job/ge-config --timeout=180s
 
 kubectl apply -f redis-deployment.yaml
+kubectl apply -f redis-service.yaml
 
-kubectl apply -f ge-service-shards.yaml
-kubectl apply -f ge-service-shards-hpa.yaml
+kubectl apply -f geservice-deployment.yaml
+kubectl apply -f geservice-service.yaml
+kubectl apply -f geservice-hpa.yaml
 
-kubectl apply -f ge-web.yaml
-kubectl apply -f ge-web-hpa.yaml
+kubectl apply -f geweb-deployment.yaml
+kubectl apply -f geweb-service.yaml
+kubectl apply -f geweb-hpa.yaml
+
+kubectl apply -f filemanager.yaml
+
 ```
 
 ---
@@ -204,26 +211,3 @@ minikube service ge-web
 | PVC Pending      | StorageClass mismatch             |
 
 ---
-
-## 11. What Is NOT Included
-
-* Source code
-* CI/CD pipelines
-* Git repository access
-
-These are only required if rebuilding or modifying images.
-
----
-
-## 12. Summary
-
-✅ Images + YAML are sufficient to run the GE Platform
-
-❗ Deployment depends on:
-
-* Registry access
-* Redis availability
-* Correct PVC setup
-* Correct apply order
-
-For questions or environment-specific adjustments, contact Pong Game Studios.
