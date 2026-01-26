@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ge-config
+  labels:
+    app: ge-config
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: ge-config
+    spec:
+      restartPolicy: OnFailure
+
+      imagePullSecrets:
+      - name: ghcr-pull-secret
+
+      containers:
+      - name: config
+        image: ghcr.io/rajp1011/pfhbe/geconfig:v1.0.1
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            echo "Overwriting PVC from image..."
+
+            # Wipe everything including hidden files/dirs, but not /mnt itself
+            rm -rf /mnt/* /mnt/.[!.]* /mnt/..?* 2>/dev/null || true
+
+            cp -a /config/Internal/. /mnt/
+            chmod -R 777 /mnt
+
+            echo "Config setup complete."
+
+        volumeMounts:
+        - name: ge-service-config-volume
+          mountPath: /mnt
+
+      volumes:
+      - name: ge-service-config-volume
+        persistentVolumeClaim:
+          claimName: ge-service-config-pvc

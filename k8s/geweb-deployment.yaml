@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-web-deployment
+  labels:
+    app: ge-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ge-web
+  template:
+    metadata:
+      labels:
+        app: ge-web
+    spec:
+      imagePullSecrets:
+      - name: ghcr-pull-secret
+
+      containers:
+      - name: ge-web-container
+        image: ghcr.io/rajp1011/pfhbe/geweb:v1.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+
+        env:
+        - name: REDIS_HOST_OVERRIDE
+          value: "redis.default.svc.cluster.local:6379"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080"
+        - name: PongGEServiceUrls__PlayGame
+          value: "http://ge-service-1:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__StartGame
+          value: "http://ge-service-1:8080/api/GE/StartGame"
+        - name: PongGEServiceUrls__PlayGame1
+          value: "http://ge-service-1:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__PlayGame2
+          value: "http://ge-service-2:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__PlayGame3
+          value: "http://ge-service-3:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__PlayGame4
+          value: "http://ge-service-4:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__PlayGame5
+          value: "http://ge-service-5:8080/api/GE/PlayGame"
+        - name: PongGEServiceUrls__StartGame1
+          value: "http://ge-service-1:8080/api/GE/StartGame"
+        - name: PongGEServiceUrls__StartGame2
+          value: "http://ge-service-2:8080/api/GE/StartGame"
+        - name: PongGEServiceUrls__StartGame3
+          value: "http://ge-service-3:8080/api/GE/StartGame"
+        - name: PongGEServiceUrls__StartGame4
+          value: "http://ge-service-4:8080/api/GE/StartGame"
+        - name: PongGEServiceUrls__StartGame5
+          value: "http://ge-service-5:8080/api/GE/StartGame"
+
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 15
+          failureThreshold: 6
+
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 10
+
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi"

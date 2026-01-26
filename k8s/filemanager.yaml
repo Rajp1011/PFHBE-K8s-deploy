@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filemanager-deployment
+  labels:
+    app: filemanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filemanager
+  template:
+    metadata:
+      labels:
+        app: filemanager
+    spec:
+      containers:
+      - name: filebrowser
+        image: filebrowser/filebrowser:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        # Mounting your existing Game Engine PVC
+        - name: storage
+          mountPath: /srv
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: ge-service-config-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filemanager-service
+spec:
+  type: NodePort
+  selector:
+    app: filemanager
+  ports:
+  - protocol: TCP
+    port: 8088      # Access within the cluster at http://filemanager-service:8088
+    targetPort: 80  # The port the container listens on
+    nodePort: 30088 # Access from your Windows Browser at http://localhost:30088

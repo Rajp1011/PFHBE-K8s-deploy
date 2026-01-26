@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ge-app-monitor
+  namespace: monitoring 
+  labels:
+    release: prometheus-stack
+spec:
+  
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:          
+          - ge-web        
+          - ge-service-1  
+          - ge-service-2  
+          - ge-service-3 
+          - ge-service-4 
+          - ge-service-5  
+
+  endpoints:
+  - port: http
+    path: /metrics

@@ -1,0 +1,17 @@
+grafana:
+  sidecar:
+    datasources:
+      enabled: false  # Prevents the duplicate "default" crash
+  initChownData:
+    enabled: false
+  
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-stack-kube-prom-prometheus.monitoring:9090
+      isDefault: true
+    - name: Loki
+      type: loki
+      url: http://loki.monitoring:3100
+      isDefault: false
+
