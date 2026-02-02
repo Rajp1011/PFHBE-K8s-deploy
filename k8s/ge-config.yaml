@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: ge-config
+  namespace: ge-dev
   labels:
     app: ge-config
 spec:
@@ -11,34 +12,30 @@ spec:
       labels:
         app: ge-config
     spec:
+      nodeSelector:
+        agentpool: geserver # Directs this task to your game pool
       restartPolicy: OnFailure
-
       imagePullSecrets:
       - name: ghcr-pull-secret
-
       containers:
       - name: config
-        image: ghcr.io/rajp1011/pfhbe/geconfig:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geconfig:v1.0.8
         imagePullPolicy: Always
         command: ["/bin/sh", "-c"]
         args:
           - |
             set -e
             echo "Overwriting PVC from image..."
-
-            # Wipe everything including hidden files/dirs, but not /mnt itself
+            # Wipe existing data
             rm -rf /mnt/* /mnt/.[!.]* /mnt/..?* 2>/dev/null || true
-
+            # Copy new data
             cp -a /config/Internal/. /mnt/
             chmod -R 777 /mnt
-
             echo "Config setup complete."
-
         volumeMounts:
-        - name: ge-service-config-volume
+        - name: ge-config-volume
           mountPath: /mnt
-
       volumes:
-      - name: ge-service-config-volume
+      - name: ge-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc

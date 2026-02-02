@@ -6,6 +6,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ge-service-1
+  namespace: ge-dev
   labels:
     app: ge-service-1
     shard: "1"
@@ -24,6 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ge-service-2
+  namespace: ge-dev
   labels:
     app: ge-service-2
     shard: "2"
@@ -42,6 +44,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ge-service-3
+  namespace: ge-dev
   labels:
     app: ge-service-3
     shard: "3"
@@ -60,6 +63,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ge-service-4
+  namespace: ge-dev
   labels:
     app: ge-service-4
     shard: "4"
@@ -78,6 +82,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ge-service-5
+  namespace: ge-dev
   labels:
     app: ge-service-5
     shard: "5"

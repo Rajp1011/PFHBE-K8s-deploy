@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-1-hpa
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "1"
@@ -11,7 +12,7 @@ spec:
     kind: Deployment
     name: ge-service-1
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
@@ -24,6 +25,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-2-hpa
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "2"
@@ -33,7 +35,7 @@ spec:
     kind: Deployment
     name: ge-service-2
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
@@ -46,6 +48,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-3-hpa
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "3"
@@ -55,7 +58,7 @@ spec:
     kind: Deployment
     name: ge-service-3
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
@@ -68,6 +71,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-4-hpa
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "4"
@@ -77,7 +81,7 @@ spec:
     kind: Deployment
     name: ge-service-4
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
@@ -90,6 +94,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-5-hpa
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "5"
@@ -99,7 +104,7 @@ spec:
     kind: Deployment
     name: ge-service-5
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:

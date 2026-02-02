@@ -7,6 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-1
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "1"
@@ -22,6 +23,8 @@ spec:
         app: ge-service
         shard: "1"
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -31,7 +34,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt/Internal to be ready..."
+            echo "Waiting for /mnt to be ready..."
             while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
               sleep 2
             done
@@ -41,24 +44,37 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-service-1"
+
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
+
         livenessProbe:
           httpGet:
             path: /healthz
@@ -71,10 +87,10 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -82,13 +98,14 @@ spec:
       volumes:
       - name: ge-service-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc
 ---
 # -------- GEService 2 --------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-2
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "2"
@@ -104,6 +121,8 @@ spec:
         app: ge-service
         shard: "2"
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -113,7 +132,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt/Internal to be ready..."
+            echo "Waiting for /mnt to be ready..."
             while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
               sleep 2
             done
@@ -123,24 +142,36 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-service-2"
+
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -153,10 +184,10 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -164,13 +195,14 @@ spec:
       volumes:
       - name: ge-service-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc
 ---
 # -------- GEService 3 --------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-3
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "3"
@@ -186,6 +218,8 @@ spec:
         app: ge-service
         shard: "3"
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -195,7 +229,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt/Internal to be ready..."
+            echo "Waiting for /mnt to be ready..."
             while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
               sleep 2
             done
@@ -205,24 +239,36 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-service-3"
+
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -235,10 +281,10 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -246,13 +292,14 @@ spec:
       volumes:
       - name: ge-service-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc
 ---
 # -------- GEService 4 --------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-4
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "4"
@@ -268,6 +315,8 @@ spec:
         app: ge-service
         shard: "4"
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -277,7 +326,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt/Internal to be ready..."
+            echo "Waiting for /mnt to be ready..."
             while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
               sleep 2
             done
@@ -287,24 +336,36 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-service-4"
+
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -317,10 +378,10 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -328,13 +389,14 @@ spec:
       volumes:
       - name: ge-service-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc
 ---
 # -------- GEService 5 --------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-5
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "5"
@@ -350,6 +412,8 @@ spec:
         app: ge-service
         shard: "5"
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -359,7 +423,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt/Internal to be ready..."
+            echo "Waiting for /mnt to be ready..."
             while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
               sleep 2
             done
@@ -369,24 +433,36 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-service-5"
+
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -399,10 +475,10 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -410,4 +486,4 @@ spec:
       volumes:
       - name: ge-service-config-volume
         persistentVolumeClaim:
-          claimName: ge-service-config-pvc
+          claimName: ge-pvc

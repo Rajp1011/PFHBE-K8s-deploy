@@ -5,11 +5,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-master
+  namespace: ge-dev
   labels:
     app: redis
     role: master
-spec:
-  
+spec:  
   replicas: 1
   selector:
     matchLabels:
@@ -21,18 +21,18 @@ spec:
         app: redis
         role: master
     spec:
+      nodeSelector:
+        agentpool: geserver  
       containers:
-      - name: master
-        
+      - name: master        
         image: redis:6.2-alpine
-        ports:
-        
+        ports:        
         - containerPort: 6379
         resources:
           requests:
-            cpu: "50m"
-            memory: "50Mi"
-          limits:
             cpu: "100m"
-            memory: "100Mi"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
 

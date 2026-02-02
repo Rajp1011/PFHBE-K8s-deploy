@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-web-deployment
+  namespace: ge-dev
   labels:
     app: ge-web
 spec:
@@ -14,21 +15,39 @@ spec:
       labels:
         app: ge-web
     spec:
+      nodeSelector:          
+        agentpool: geserver  
       imagePullSecrets:
       - name: ghcr-pull-secret
-
+      # RECOMMENDED: Wait for Redis to be reachable
+      initContainers:
+      - name: wait-for-redis
+        image: busybox:latest
+        command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v1.0.1
+        image: ghcr.io/rajp1011/pfhbe/geweb:v1.0.8
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-
         env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secrets
+              key: SENTRY_DSN
+        - name: SENTRY_ENVIRONMENT
+          value: "development"
+        - name: SENTRY_RELEASE
+          value: "pfh-kubernetes@v1.0.8"
+        - name: SENTRY_SERVER_NAME
+          value: "ge-web"
+
         - name: REDIS_HOST_OVERRIDE
-          value: "redis.default.svc.cluster.local:6379"
+          value: "redis:6379"
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
+
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: PongGEServiceUrls__PlayGame
@@ -60,7 +79,7 @@ spec:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
+          initialDelaySeconds: 45
           periodSeconds: 20
           timeoutSeconds: 15
           failureThreshold: 6
@@ -69,15 +88,15 @@ spec:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 10
+          failureThreshold: 15
 
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "256Mi"
           limits:
             cpu: "1000m"
             memory: "1024Mi"
