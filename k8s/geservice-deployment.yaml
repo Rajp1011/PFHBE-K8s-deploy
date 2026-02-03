@@ -53,8 +53,8 @@ spec:
             cpu: "50m"
             memory: "128Mi"
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "1000m"
+            memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -151,8 +151,8 @@ spec:
             cpu: "50m"
             memory: "128Mi"
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "1000m"
+            memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -248,8 +248,8 @@ spec:
             cpu: "50m"
             memory: "128Mi"
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "1000m"
+            memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -345,8 +345,8 @@ spec:
             cpu: "50m"
             memory: "128Mi"
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "1000m"
+            memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -442,8 +442,8 @@ spec:
             cpu: "50m"
             memory: "128Mi"
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: "1000m"
+            memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
