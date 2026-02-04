@@ -42,8 +42,10 @@ kubectl apply -f $K8S_DIR/redis-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/redis-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-service.yaml -n $NAMESPACE
+kubectl apply -f $K8S_DIR/geservice-hpa.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-service.yaml -n $NAMESPACE
+kubectl apply -f $K8S_DIR/geweb-hpa.yaml -n $NAMESPACE
 
 # [4/4] STATUS
 echo -e "\n[4/4] FINAL STATUS"
