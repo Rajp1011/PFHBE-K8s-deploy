@@ -30,14 +30,14 @@ metadata:
     app: ge-service-2
     shard: "2"
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
-    app: ge-service
+    app: ge-service-2
     shard: "2"
   ports:
   - protocol: TCP
-    name: http
-    port: 8080
+    # name: http
+    port: 80
     targetPort: 8080
 ---
 apiVersion: v1
