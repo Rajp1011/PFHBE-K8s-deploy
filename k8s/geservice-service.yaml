@@ -32,7 +32,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: ge-service-2
+    app: ge-service
     shard: "2"
   ports:
   - protocol: TCP
