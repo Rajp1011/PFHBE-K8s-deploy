@@ -150,9 +150,9 @@ spec:
           requests:
             cpu: "300m"
             memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "1024Mi"
+          # limits:
+          #   cpu: "1000m"
+          #   memory: "1024Mi"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -176,18 +176,19 @@ spec:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 20
-          timeoutSeconds: 15
-          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          # timeoutSeconds: 15
+          # failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 15
+          initialDelaySeconds: 2
+          periodSeconds: 3
+          successThreshold: 1
+          # timeoutSeconds: 10
+          # failureThreshold: 10
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
