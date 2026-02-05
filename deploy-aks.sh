@@ -52,4 +52,4 @@ echo -e "\n[4/4] FINAL STATUS"
 echo "---------------------------------------------------------"
 kubectl get pods -n $NAMESPACE
 echo -e "\nWaiting for External IP (Ctrl+C to stop watching)..."
-kubectl get svc ge-web -n $NAMESPACE --watch
+kubectl get svc -n $NAMESPACE --watch
