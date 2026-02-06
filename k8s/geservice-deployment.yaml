@@ -57,7 +57,7 @@ spec:
           #   memory: "512Mi"
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "100"
+          value: "16"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
@@ -159,7 +159,7 @@ spec:
           #   memory: "1024Mi"
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "100"
+          value: "16"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
@@ -261,7 +261,7 @@ spec:
           #   memory: "512Mi"
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "100"
+          value: "16"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
@@ -362,7 +362,7 @@ spec:
           #   memory: "512Mi"
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "100"
+          value: "16"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
@@ -463,7 +463,7 @@ spec:
           #   memory: "512Mi"
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "100"
+          value: "16"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
