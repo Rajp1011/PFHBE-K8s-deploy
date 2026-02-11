@@ -33,7 +33,7 @@ echo -e "\n[2/4] Seeding Configuration..."
 kubectl delete job ge-config -n $NAMESPACE --ignore-not-found
 kubectl apply -f $K8S_DIR/ge-config.yaml -n $NAMESPACE
 echo "Waiting for Config Job to complete..."
-kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=120s
+kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
 # [3/4] DEPLOY EVERYTHING ELSE
 echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
