@@ -3,19 +3,11 @@ kind: Ingress
 metadata:
   name: ge-web
   namespace: ge-dev
-  
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /swagger
-        pathType: Prefix
-        backend:
-          service:
-            name: ge-web
-            port:
-              number: 80
       - path: /
         pathType: Prefix
         backend:
