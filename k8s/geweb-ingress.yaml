@@ -3,12 +3,21 @@ kind: Ingress
 metadata:
   name: ge-web
   namespace: ge-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
       - path: /swagger
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-web
+            port:
+              number: 80
+      - path: /
         pathType: Prefix
         backend:
           service:
