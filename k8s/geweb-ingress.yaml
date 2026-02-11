@@ -1,14 +1,83 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ge-web
+#   namespace: ge-dev
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: ge-web
+#             port:
+#               number: 80
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ge-web
+  name: ge-main-ingress
   namespace: ge-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # Increased proxy body size in case you upload configs/files
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /
+      # --- Shard 1 ---
+      - path: /shard1(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-service-1
+            port:
+              number: 8080
+
+      # --- Shard 2 ---
+      - path: /shard2(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-service-2
+            port:
+              number: 8080
+
+      # --- Shard 3 ---
+      - path: /shard3(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-service-3
+            port:
+              number: 8080
+
+      # --- Shard 4 ---
+      - path: /shard4(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-service-4
+            port:
+              number: 8080
+
+      # --- Shard 5 ---
+      - path: /shard5(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: ge-service-5
+            port:
+              number: 8080
+
+      # --- GE Web (Catch-all for everything else) ---
+      # keep this last so it doesn't override the shard paths
+      - path: /()(.*)
         pathType: Prefix
         backend:
           service:
