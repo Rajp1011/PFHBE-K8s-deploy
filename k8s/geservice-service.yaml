@@ -30,7 +30,7 @@ metadata:
     app: ge-service-2
     shard: "2"
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: ge-service
     shard: "2"

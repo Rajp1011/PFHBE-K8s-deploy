@@ -4,7 +4,7 @@ metadata:
   name: ge-web
   namespace: ge-dev
 spec:
-  type: LoadBalancer # External IP
+  type: ClusterIP # External IP - ingress-nginx
   selector:
     app: ge-web
   ports:
