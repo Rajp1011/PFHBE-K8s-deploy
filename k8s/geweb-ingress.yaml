@@ -23,8 +23,7 @@ metadata:
   namespace: ge-dev
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-    # Increased proxy body size in case you upload configs/files
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -32,7 +31,7 @@ spec:
       paths:
       # --- Shard 1 ---
       - path: /shard1(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-service-1
@@ -41,7 +40,7 @@ spec:
 
       # --- Shard 2 ---
       - path: /shard2(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-service-2
@@ -50,7 +49,7 @@ spec:
 
       # --- Shard 3 ---
       - path: /shard3(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-service-3
@@ -59,7 +58,7 @@ spec:
 
       # --- Shard 4 ---
       - path: /shard4(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-service-4
@@ -68,17 +67,16 @@ spec:
 
       # --- Shard 5 ---
       - path: /shard5(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-service-5
             port:
               number: 8080
 
-      # --- GE Web (Catch-all for everything else) ---
-      # keep this last so it doesn't override the shard paths
+      # --- GE Web (Catch-all) ---      
       - path: /()(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ge-web
