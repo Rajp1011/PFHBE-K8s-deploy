@@ -3,8 +3,7 @@ kind: Ingress
 metadata:
   name: ge-web
   namespace: ge-dev
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  
 spec:
   ingressClassName: nginx
   rules:
