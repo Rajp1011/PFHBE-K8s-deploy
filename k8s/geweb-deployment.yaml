@@ -26,7 +26,7 @@ spec:
         command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v4.0.1
+        image: ghcr.io/rajp1011/pfhbe/geweb:v4.0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -43,7 +43,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v4.0.1"
+          value: "pfh-kubernetes@v4.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-web"
 

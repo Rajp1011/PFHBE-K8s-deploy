@@ -19,7 +19,7 @@ spec:
       - name: ghcr-pull-secret
       containers:
       - name: config
-        image: ghcr.io/rajp1011/pfhbe/geconfig:v4.0.1
+        image: ghcr.io/rajp1011/pfhbe/geconfig:v4.0.2
         imagePullPolicy: Always
         command: ["/bin/sh", "-c"]
         args:
