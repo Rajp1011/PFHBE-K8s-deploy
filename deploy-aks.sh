@@ -47,9 +47,17 @@ kubectl apply -f $K8S_DIR/geweb-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-hpa.yaml -n $NAMESPACE
 
+kubectl apply -f $K8S_DIR/ge-ingress.yaml -n $NAMESPACE
+
 # [4/4] STATUS
 echo -e "\n[4/4] FINAL STATUS"
 echo "---------------------------------------------------------"
 kubectl get pods -n $NAMESPACE
-echo -e "\nWaiting for External IP (Ctrl+C to stop watching)..."
-kubectl get svc -n $NAMESPACE --watch
+
+echo "GE-Web Ingress URL > http://20.104.176.217/swagger/index.html "
+echo "GE-Service1 Ingress URL > http://20.104.176.217/shard1/swagger/index.html "
+echo "GE-Service2 Ingress URL > http://20.104.176.217/shard2/swagger/index.html "
+echo "GE-Service3 Ingress URL > http://20.104.176.217/shard3/swagger/index.html "
+echo "GE-Service4 Ingress URL > http://20.104.176.217/shard4/swagger/index.html "
+echo "GE-Service5 Ingress URL > http://20.104.176.217/shard5/swagger/index.html "
+echo -e "\nUpdated..! Wait couple more seconds to restart..."
