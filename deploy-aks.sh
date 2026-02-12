@@ -40,13 +40,17 @@ echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
 # Using a single apply for the rest to be efficient
 kubectl apply -f $K8S_DIR/redis-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/redis-service.yaml -n $NAMESPACE
+sleep $WAIT_STORAGE
 kubectl apply -f $K8S_DIR/geservice-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-hpa.yaml -n $NAMESPACE
+sleep $WAIT_STORAGE
+sleep $WAIT_STORAGE
 kubectl apply -f $K8S_DIR/geweb-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-hpa.yaml -n $NAMESPACE
-
+sleep $WAIT_STORAGE
+sleep $WAIT_STORAGE
 kubectl apply -f $K8S_DIR/ge-ingress.yaml -n $NAMESPACE
 
 # [4/4] STATUS
