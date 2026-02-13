@@ -35,6 +35,11 @@ kubectl apply -f $K8S_DIR/ge-config.yaml -n $NAMESPACE
 echo "Waiting for Config Job to complete..."
 kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
+# kubectl delete job gepools-config -n $NAMESPACE --ignore-not-found
+# kubectl apply -f $K8S_DIR/gepools-config.yaml -n $NAMESPACE
+# echo "Waiting for Config Job to complete..."
+# kubectl wait --for=condition=complete job/gepools-config -n $NAMESPACE --timeout=150s
+
 # [3/4] DEPLOY EVERYTHING ELSE
 echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
 # Using a single apply for the rest to be efficient

@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ge-pools-config
+  namespace: ge-dev
+  labels:
+    app: ge-pools-config
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: ge-pools-config
+    spec:
+      nodeSelector:
+        agentpool: geserver
+      restartPolicy: OnFailure
+      imagePullSecrets:
+      - name: ghcr-pull-secret
+      containers:
+      - name: config
+        image: ghcr.io/rajp1011/pfhbe/ge-pools:latest # Your NEW Pools-only Image
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            echo "Starting Pools-only sync..."
+            
+            # Sync FROM container /config/Pools/ TO PVC /mnt/Pools/
+            # This ONLY touches the Pools folder and leaves everything else alone
+            rsync -av --delete /config/Pools/ /mnt/Pools/
+            
+            chmod -R 777 /mnt/Pools
+            echo "Pools Sync complete."
+        volumeMounts:
+        - name: ge-config-volume
+          mountPath: /mnt
+      volumes:
+      - name: ge-config-volume
+        persistentVolumeClaim:
+          claimName: ge-pvc
