@@ -32,7 +32,7 @@ spec:
         - containerPort: 8080
         env:
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
-          value: "16"
+          value: "100"
         - name: COMPlus_gcServer
           value: "1"
         - name: SENTRY_DSN
