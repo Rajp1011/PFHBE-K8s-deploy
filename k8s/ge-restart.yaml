@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ge-nightly-restart
+  namespace: ge-dev
+spec:
+  # 0 2 * * * = 2:00 AM every day
+  schedule: "0 2 * * *" 
+  timezone: "Etc/UTC" 
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: restart-sa
+          containers:
+          - name: kubectl-container
+            image: bitnami/kubectl:latest
+            command:
+              - /bin/sh
+              - -c
+              - |
+                echo "--- Starting Nightly Restart ---"
+                # This restarts all 5 ge-service shards and the ge-web deployment
+                kubectl rollout restart deployment/ge-service-1 -n ge-dev
+                kubectl rollout restart deployment/ge-service-2 -n ge-dev
+                kubectl rollout restart deployment/ge-service-3 -n ge-dev
+                kubectl rollout restart deployment/ge-service-4 -n ge-dev
+                kubectl rollout restart deployment/ge-service-5 -n ge-dev
+                kubectl rollout restart deployment/ge-web-deployment -n ge-dev
+                echo "Rollout triggered successfully at $(date)"
+          restartPolicy: OnFailure
