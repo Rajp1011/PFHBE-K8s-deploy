@@ -29,7 +29,7 @@ spec:
       - name: ghcr-pull-secret
       initContainers:
       - name: wait-for-config
-        image: busybox:v6.0.0
+        image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
@@ -131,7 +131,7 @@ spec:
       - name: ghcr-pull-secret
       initContainers:
       - name: wait-for-config
-        image: busybox:v6.0.0
+        image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
@@ -233,7 +233,7 @@ spec:
       - name: ghcr-pull-secret
       initContainers:
       - name: wait-for-config
-        image: busybox:v6.0.0
+        image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
@@ -334,7 +334,7 @@ spec:
       - name: ghcr-pull-secret
       initContainers:
       - name: wait-for-config
-        image: busybox:v6.0.0
+        image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
@@ -435,7 +435,7 @@ spec:
       - name: ghcr-pull-secret
       initContainers:
       - name: wait-for-config
-        image: busybox:v6.0.0
+        image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
