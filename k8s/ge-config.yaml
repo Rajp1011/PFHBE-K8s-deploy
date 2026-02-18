@@ -20,7 +20,7 @@ spec:
       containers:
       - name: config
         image: ghcr.io/rajp1011/pfhbe/geconfig:v6.0.0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -34,8 +34,9 @@ spec:
             # rsync -av --delete --exclude='Pools/' /config/Internal/ /mnt/
             
             # Ensure permissions are correct for the game server
-            chmod -R 777 /mnt
-            
+            # chmod -R 777 /mnt
+
+            echo "geconfig=v6.0.0 $(date -u)" > /mnt/.geconfig_version.txt            
             echo "Sync complete."
         volumeMounts:
         - name: ge-config-volume

@@ -27,7 +27,7 @@ spec:
       containers:
       - name: ge-web-container
         image: ghcr.io/rajp1011/pfhbe/geweb:v6.0.0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:
