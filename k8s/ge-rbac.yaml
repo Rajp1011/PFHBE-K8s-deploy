@@ -13,6 +13,11 @@ rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
     verbs: ["get", "patch", "list", "watch"]
+
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

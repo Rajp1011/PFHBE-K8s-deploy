@@ -6,13 +6,17 @@ metadata:
 spec:
   # 0 2 * * * = 2:00 AM every day
   schedule: "0 2 * * *" 
-  timezone: "Etc/UTC" 
+  timezone: "America/Toronto" 
   concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      backoffLimit: 1
       template:
         spec:
           serviceAccountName: restart-sa
+          restartPolicy: Never
           containers:
           - name: kubectl-container
             image: bitnami/kubectl:latest
@@ -20,13 +24,32 @@ spec:
               - /bin/sh
               - -c
               - |
+                set -e
                 echo "--- Starting Nightly Restart ---"
-                # This restarts all 5 ge-service shards and the ge-web deployment
+                # Restart ge-service-1
                 kubectl rollout restart deployment/ge-service-1 -n ge-dev
+                kubectl rollout status deployment/ge-service-1 -n ge-dev --timeout=200s
+
+                # Restart ge-service-2
                 kubectl rollout restart deployment/ge-service-2 -n ge-dev
+                kubectl rollout status deployment/ge-service-2 -n ge-dev --timeout=200s
+
+                # Restart ge-service-3
                 kubectl rollout restart deployment/ge-service-3 -n ge-dev
+                kubectl rollout status deployment/ge-service-3 -n ge-dev --timeout=200s
+
+                # Restart ge-service-4
                 kubectl rollout restart deployment/ge-service-4 -n ge-dev
+                kubectl rollout status deployment/ge-service-4 -n ge-dev --timeout=200s
+
+                # Restart ge-service-5
                 kubectl rollout restart deployment/ge-service-5 -n ge-dev
+                kubectl rollout status deployment/ge-service-5 -n ge-dev --timeout=200s
+
+                # Restart ge-web
                 kubectl rollout restart deployment/ge-web-deployment -n ge-dev
-                echo "Rollout triggered successfully at $(date)"
-          restartPolicy: OnFailure
+                kubectl rollout status deployment/ge-web-deployment -n ge-dev --timeout=200s
+
+                kubectl get pods -n ge-dev
+                echo "All rollouts completed successfully at $(date)"
+          
