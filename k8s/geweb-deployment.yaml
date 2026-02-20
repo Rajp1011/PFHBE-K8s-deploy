@@ -21,12 +21,25 @@ spec:
       - name: ghcr-pull-secret
       # RECOMMENDED: Wait for Redis to be reachable
       initContainers:
+      - name: init-gelogs
+        image: busybox:1.36
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            mkdir -p /mnt/GELogs/GEWeb
+            chmod -R 777 /mnt/GELogs
+        volumeMounts:
+        - name: ge-service-config-volume
+          mountPath: /mnt
+
       - name: wait-for-redis
         image: busybox:latest
         command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
+
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v6.0.3
+        image: ghcr.io/rajp1011/pfhbe/geweb:v6.0.4
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -43,7 +56,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v6.0.3"
+          value: "pfh-kubernetes@v6.0.4"
         - name: SENTRY_SERVER_NAME
           value: "ge-web"
 
@@ -107,3 +120,13 @@ spec:
           # limits:
           #   cpu: "1000m"
           #   memory: "1024Mi"
+
+        volumeMounts:
+        - name: ge-service-config-volume
+          mountPath: /mnt
+          readOnly: false
+
+      volumes:
+      - name: ge-service-config-volume
+        persistentVolumeClaim:
+          claimName: ge-pvc
