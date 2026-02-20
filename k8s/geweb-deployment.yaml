@@ -39,7 +39,7 @@ spec:
 
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v6.0.4
+        image: ghcr.io/rajp1011/pfhbe/geweb:v7.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -56,7 +56,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v6.0.4"
+          value: "pfh-kubernetes@v7.0.0"
         - name: SENTRY_SERVER_NAME
           value: "ge-web"
 
@@ -92,7 +92,7 @@ spec:
         - name: PongGEServiceUrls__StartGame5
           value: "http://ge-service-5:8080/api/GE/StartGame"
         - name: PongGEServiceUrls__GetVersion
-          value: "http://ge-service-1:8080/GE/GetVersion"  
+          value: "http://ge-service-1:8080/api/GE/GetVersion"  
 
         livenessProbe:
           httpGet:

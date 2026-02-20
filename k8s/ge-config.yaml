@@ -19,24 +19,27 @@ spec:
       - name: ghcr-pull-secret
       containers:
       - name: config
-        image: ghcr.io/rajp1011/pfhbe/geconfig:v6.0.4
+        image: ghcr.io/rajp1011/pfhbe/geconfig:v7.0.0
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
           - |
             set -e
             echo "Starting smart sync..."
+
+            # Ensure target folder exists
+            mkdir -p /mnt/Internal
             
             # --archive: keeps permissions/dates
             # --delete: removes files from PVC that you deleted in Docker
             # --verbose: shows progress in logs
-            rsync -av --delete --exclude='GELogs/' /config/Internal/ /mnt/
-            # rsync -av --delete --exclude='Pools/' /config/Internal/ /mnt/
+            rsync -av --delete --exclude='GELogs/' /config/Internal/ /mnt/Internal/ 
+            # rsync -av --delete --exclude='Pools/' /config/Internal/ /mnt/Internal/
             
             # Ensure permissions are correct for the game server
             # chmod -R 777 /mnt
 
-            echo "geconfig=v6.0.4 $(date -u)" >> /mnt/.geconfig_version.txt            
+            echo "geconfig=v7.0.0 $(date -u)" >> /mnt/.geconfig_version.txt            
             echo "Sync complete."
         volumeMounts:
         - name: ge-config-volume
