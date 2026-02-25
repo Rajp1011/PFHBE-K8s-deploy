@@ -63,9 +63,9 @@ spec:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "250m"
-          #   memory: "512Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         env:
         - name: GE_SHARD
           value: "1"
@@ -91,23 +91,22 @@ spec:
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
           value: "redis:6379"
-
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
           periodSeconds: 20
-          timeoutSeconds: 15
-          failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -182,9 +181,9 @@ spec:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "1000m"
-          #   memory: "1024Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         env:
         - name: GE_SHARD
           value: "2"
@@ -210,23 +209,22 @@ spec:
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
           value: "redis:6379"
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          # timeoutSeconds: 15
-          # failureThreshold: 6
+          periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 2
-          periodSeconds: 3
-          successThreshold: 1
-          # timeoutSeconds: 10
-          # failureThreshold: 10
+          periodSeconds: 10
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -301,9 +299,9 @@ spec:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "250m"
-          #   memory: "512Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         env:
         - name: GE_SHARD
           value: "3"
@@ -329,22 +327,22 @@ spec:
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
           value: "redis:6379"
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
           periodSeconds: 20
-          timeoutSeconds: 15
-          failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -419,9 +417,9 @@ spec:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "250m"
-          #   memory: "512Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         env:
         - name: GE_SHARD
           value: "4"
@@ -447,22 +445,22 @@ spec:
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
           value: "redis:6379"
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
           periodSeconds: 20
-          timeoutSeconds: 15
-          failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
@@ -537,9 +535,9 @@ spec:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "250m"
-          #   memory: "512Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         env:
         - name: GE_SHARD
           value: "5"
@@ -565,22 +563,22 @@ spec:
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
           value: "redis:6379"
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 30
           periodSeconds: 20
-          timeoutSeconds: 15
-          failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 60
           periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 15
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal

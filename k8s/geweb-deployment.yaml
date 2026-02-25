@@ -94,32 +94,29 @@ spec:
         - name: PongGEServiceUrls__GetVersion
           value: "http://ge-service-1:8080/api/GE/GetVersion"  
 
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30  # Allow 30 tries
+          periodSeconds: 5      # Check every 5s        
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          # timeoutSeconds: 15
-          # failureThreshold: 6
-
+          periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /ready
             port: 8080
-          initialDelaySeconds: 2
-          periodSeconds: 3
-          successThreshold: 1
-          # timeoutSeconds: 10
-          # failureThreshold: 10
-
+          periodSeconds: 10
         resources:
           requests:
             cpu: "150m"
             memory: "256Mi"
-          # limits:
-          #   cpu: "1000m"
-          #   memory: "1024Mi"
+          limits:
+            cpu: "300m"
+            memory: "512Mi"
 
         volumeMounts:
         - name: ge-service-config-volume
