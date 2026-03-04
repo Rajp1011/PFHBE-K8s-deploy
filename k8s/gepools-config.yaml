@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: ge-pools-config
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-pools-config
 spec:

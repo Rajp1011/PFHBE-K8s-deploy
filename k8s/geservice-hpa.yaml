@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-1-hpa
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "1"
@@ -25,7 +25,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-2-hpa
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "2"
@@ -48,7 +48,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-3-hpa
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "3"
@@ -71,7 +71,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-4-hpa
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "4"
@@ -94,7 +94,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: ge-service-5-hpa
-  namespace: ig-dev
+  namespace: ge-dev
   labels:
     app: ge-service
     shard: "5"
