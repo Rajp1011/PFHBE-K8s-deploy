@@ -3,7 +3,7 @@
 # ==========================
 # CONFIG
 # ==========================
-NAMESPACE="ge-dev"
+NAMESPACE="ig-dev"
 K8S_DIR="k8s"
 WAIT_STORAGE=15
 
