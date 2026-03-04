@@ -7,7 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-1
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-service
     shard: "1"
@@ -125,7 +125,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-2
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-service
     shard: "2"
@@ -243,7 +243,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-3
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-service
     shard: "3"
@@ -361,7 +361,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-4
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-service
     shard: "4"
@@ -479,7 +479,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-service-5
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-service
     shard: "5"

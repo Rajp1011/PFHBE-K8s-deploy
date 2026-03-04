@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: ge-nightly-restart
-  namespace: ge-dev
+  namespace: ig-dev
 spec:
   # 0 2 * * * = 2:00 AM every day
   schedule: "0 2 * * *" 

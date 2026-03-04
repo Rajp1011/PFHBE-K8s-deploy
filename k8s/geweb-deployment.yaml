@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ge-web-deployment
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-web
 spec:

@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: ge-config
-  namespace: ge-dev
+  namespace: ig-dev
   labels:
     app: ge-config
 spec:
