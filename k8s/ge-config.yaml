@@ -13,7 +13,7 @@ spec:
         app: ge-config
     spec:
       nodeSelector:
-        agentpool: geserver 
+        agentpool: igserver 
       tolerations:
       - key: "sku"
         operator: "Equal"

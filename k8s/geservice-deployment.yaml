@@ -24,7 +24,7 @@ spec:
         shard: "1"
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: igserver  
       tolerations:
       - key: "sku"
         operator: "Equal"
@@ -147,7 +147,7 @@ spec:
         shard: "2"
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: igserver  
       tolerations:
       - key: "sku"
         operator: "Equal"
@@ -270,7 +270,7 @@ spec:
         shard: "3"
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: igserver  
       tolerations:
       - key: "sku"
         operator: "Equal"
@@ -393,7 +393,7 @@ spec:
         shard: "4"
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: igserver  
       tolerations:
       - key: "sku"
         operator: "Equal"
@@ -516,7 +516,7 @@ spec:
         shard: "5"
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: igserver  
       tolerations:
       - key: "sku"
         operator: "Equal"
