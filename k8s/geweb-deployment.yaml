@@ -16,7 +16,12 @@ spec:
         app: ge-web
     spec:
       nodeSelector:          
-        agentpool: geserver  
+        agentpool: geserver
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       # RECOMMENDED: Wait for Redis to be reachable

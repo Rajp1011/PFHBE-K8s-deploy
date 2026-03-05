@@ -25,6 +25,11 @@ spec:
     spec:
       nodeSelector:          
         agentpool: geserver  
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -143,6 +148,11 @@ spec:
     spec:
       nodeSelector:          
         agentpool: geserver  
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -261,6 +271,11 @@ spec:
     spec:
       nodeSelector:          
         agentpool: geserver  
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -379,6 +394,11 @@ spec:
     spec:
       nodeSelector:          
         agentpool: geserver  
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
@@ -497,6 +517,11 @@ spec:
     spec:
       nodeSelector:          
         agentpool: geserver  
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gameengine"
+        effect: "NoSchedule"  
       imagePullSecrets:
       - name: ghcr-pull-secret
       initContainers:
