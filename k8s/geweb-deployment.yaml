@@ -38,9 +38,9 @@ spec:
         - name: ge-service-config-volume
           mountPath: /mnt
 
-      # - name: wait-for-redis
-      #   image: busybox:latest
-      #   command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
+      - name: wait-for-redis
+        image: busybox:latest
+        command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
 
       containers:
       - name: ge-web-container
@@ -66,11 +66,7 @@ spec:
           value: "ge-web"
 
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
 
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"

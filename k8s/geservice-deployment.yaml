@@ -95,11 +95,7 @@ spec:
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
         startupProbe:
           httpGet:
             path: /healthz
@@ -222,11 +218,7 @@ spec:
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
         startupProbe:
           httpGet:
             path: /healthz
@@ -349,11 +341,7 @@ spec:
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
         startupProbe:
           httpGet:
             path: /healthz
@@ -476,11 +464,7 @@ spec:
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
         startupProbe:
           httpGet:
             path: /healthz
@@ -603,11 +587,7 @@ spec:
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: REDIS_HOST_OVERRIDE
-          valueFrom:
-            secretKeyRef:
-              name: redis-secrets
-              key: AZURE_REDIS_CONNECTION  
-          # value: "redis:6379"
+          value: "redis:6379"
         startupProbe:
           httpGet:
             path: /healthz
