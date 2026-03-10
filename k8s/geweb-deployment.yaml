@@ -7,6 +7,13 @@ metadata:
     app: ge-web
 spec:
   replicas: 1
+  minReadySeconds: 7
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
   selector:
     matchLabels:
       app: ge-web
@@ -44,7 +51,7 @@ spec:
 
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geweb:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -61,7 +68,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-web"
 

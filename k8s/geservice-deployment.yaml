@@ -13,6 +13,12 @@ metadata:
     shard: "1"
 spec:
   replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: ge-service
@@ -60,7 +66,7 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -86,7 +92,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-1"
 
@@ -136,6 +142,12 @@ metadata:
     shard: "2"
 spec:
   replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: ge-service
@@ -183,7 +195,7 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -209,7 +221,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-2"
 
@@ -259,6 +271,12 @@ metadata:
     shard: "3"
 spec:
   replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: ge-service
@@ -306,7 +324,7 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -332,7 +350,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-3"
 
@@ -382,6 +400,12 @@ metadata:
     shard: "4"
 spec:
   replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: ge-service
@@ -429,7 +453,7 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -455,7 +479,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-4"
 
@@ -505,6 +529,12 @@ metadata:
     shard: "5"
 spec:
   replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: ge-service
@@ -552,7 +582,7 @@ spec:
           mountPath: /mnt
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.1
+        image: ghcr.io/rajp1011/pfhbe/geservice:v8.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -578,7 +608,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.1"
+          value: "pfh-kubernetes@v8.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-5"
 
