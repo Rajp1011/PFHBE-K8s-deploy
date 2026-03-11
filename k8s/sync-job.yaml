@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ge-config-sync
+  namespace: ge-dev
+spec:
+  template:
+    spec:
+      containers:
+      - name: git-sync
+        image: instrumentisto/rsync-ssh:latest # This image has both git and rsync, and SSH client [alpine/git doesn't have rsync]
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # 1. Setup SSH Key
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+          # 2. Clone the Build repo to a temp location
+          git clone --depth 1 git@github.com:PongGameStudios/Build.git /tmp/build-repo
+
+          # 3. Create destination structures if missing
+          mkdir -p /mnt/pvc/GEService/Internal
+          mkdir -p /mnt/pvc/GEWeb/Internal
+
+          # 4. Smart Sync - Only syncs changes and deletes removed files within these paths
+          echo "Syncing GEService..."
+          rsync -av --delete /tmp/build-repo/iGaming/GEService/Internal/ /mnt/pvc/GEService/Internal/
+          
+          echo "Syncing GEWeb..."
+          rsync -av --delete /tmp/build-repo/iGaming/GEWeb/Internal/ /mnt/pvc/GEWeb/Internal/
+
+          # 5. Version Tracking
+          # This creates/updates a version file in each service folder
+          TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
+          
+          echo "Last Sync: $TIMESTAMP" > /mnt/pvc/GEService/Internal/sync_info.txt
+          echo "Last Sync: $TIMESTAMP" > /mnt/pvc/GEWeb/Internal/sync_info.txt          
+
+          echo "Sync Complete!"
+        env:
+        - name: SSH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: github-deploy-key
+              key: ssh-privatekey
+        volumeMounts:
+        - name: storage
+          mountPath: /mnt/pvc
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: ge-pvc
+      restartPolicy: Never
+  backoffLimit: 2
