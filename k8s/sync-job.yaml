@@ -14,7 +14,7 @@ spec:
         - -c
         - |
           set -e
-          # 1. Install rsync (Alpine uses apk)
+          # 1. Install dependencies
           apk add --no-cache git rsync openssh-client
 
           # 2. Setup SSH Key
@@ -23,25 +23,30 @@ spec:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-          # 3. Clone the Build repo to a temporary location
+          # 3. Clone the repo
           echo "Cloning repository..."
           git clone --depth 1 git@github.com:Rajp1011/PFHBE-Internal.git /tmp/build-repo
 
-          echo "Checking repo structure:"
-          ls -R /tmp/build-repo/Internal
+          # 4. Prepare Audit Log
+          AUDIT_LOG="/mnt/pvc/GEService/Internal/sync_audit.log"
+          TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
 
-          # 4. Create destination sub-folders if they don't exist
           mkdir -p /mnt/pvc/GEService/Internal
 
-          # 5. Smart Sync with rsync
-          # This ONLY affects the specific sub-folders. 
+          echo "-------------------------------------------" >> $AUDIT_LOG
+          echo "Sync Started: $TIMESTAMP" >> $AUDIT_LOG
+
+          # 5. Smart Sync
           echo "Starting sync for GEService..."
-          rsync -av --delete /tmp/build-repo/Internal/ /mnt/pvc/GEService/Internal/
-          
-          # 6. Version Tracking
-          TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
-          echo "Last Sync: $TIMESTAMP" > /mnt/pvc/GEService/Internal/sync_info.txt
-          
+          rsync -avi --delete /tmp/build-repo/Internal/ /mnt/pvc/GEService/Internal/ > /tmp/changes.txt
+
+          # 6. Format Audit Log
+          grep -E '>f|\*deleting' /tmp/changes.txt | sed \
+            -e 's/>f+++++++/[ ADDED   ]/g' \
+            -e 's/>f.st....../[ UPDATED ]/g' \
+            -e 's/\*deleting  /[ DELETED ]/g' >> $AUDIT_LOG
+
+          echo "Sync Finished Successfully" >> $AUDIT_LOG
           echo "Sync Complete!"
         env:
         - name: SSH_KEY
