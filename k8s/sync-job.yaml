@@ -15,7 +15,7 @@ spec:
         - |
           set -e
           # 1. Install rsync (Alpine uses apk)
-          apk add --no-cache rsync
+          apk add --no-cache git rsync openssh-client
 
           # 2. Setup SSH Key
           mkdir -p ~/.ssh
@@ -25,34 +25,29 @@ spec:
 
           # 3. Clone the Build repo to a temporary location
           echo "Cloning repository..."
-          git clone --depth 1 git@github.com:PongGameStudios/Build.git /tmp/build-repo
+          git clone --depth 1 git@github.com:Rajp1011/PFHBE-Internal.git /tmp/build-repo
 
           echo "Checking repo structure:"
-          ls -R /tmp/build-repo/iGaming
+          ls -R /tmp/build-repo/Internal
 
           # 4. Create destination sub-folders if they don't exist
           mkdir -p /mnt/pvc/GEService/Internal
-          mkdir -p /mnt/pvc/GEWeb/Internal
 
           # 5. Smart Sync with rsync
           # This ONLY affects the specific sub-folders. 
           echo "Starting sync for GEService..."
-          rsync -av --delete /tmp/build-repo/iGaming/GEService/Internal/ /mnt/pvc/GEService/Internal/
-
-          echo "Starting sync for GEWeb..."
-          rsync -av --delete /tmp/build-repo/iGaming/GEWeb/Internal/ /mnt/pvc/GEWeb/Internal/
+          rsync -av --delete /tmp/build-repo/Internal/ /mnt/pvc/GEService/Internal/
           
           # 6. Version Tracking
           TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
           echo "Last Sync: $TIMESTAMP" > /mnt/pvc/GEService/Internal/sync_info.txt
-          echo "Last Sync: $TIMESTAMP" > /mnt/pvc/GEWeb/Internal/sync_info.txt
           
           echo "Sync Complete!"
         env:
         - name: SSH_KEY
           valueFrom:
             secretKeyRef:
-              name: github-deploy-key
+              name: internal-raj-deploy-key
               key: ssh-privatekey
         volumeMounts:
         - name: storage
