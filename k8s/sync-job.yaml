@@ -28,7 +28,7 @@ spec:
           git clone --depth 1 git@github.com:Rajp1011/PFHBE-Internal.git /tmp/build-repo
 
           # 4. Prepare Audit Log
-          AUDIT_LOG="/mnt/pvc/GEService/Internal/sync_audit.log"
+          AUDIT_LOG="/mnt/pvc/GEService/sync_audit.log"
           TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
 
           mkdir -p /mnt/pvc/GEService/Internal
