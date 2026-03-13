@@ -54,7 +54,7 @@ spec:
 
           # 7. Sync only changed files using size + modified time
           echo "Starting sync for GEService..."
-          rsync -rvi --delete --omit-dir-times "$SRC_DIR/" "$DST_DIR/" > /tmp/changes.txt
+          rsync -rtvi --delete --omit-dir-times "$SRC_DIR/" "$DST_DIR/" > /tmp/changes.txt
 
           # 8. Write only added / updated / deleted entries to audit log
           grep -E '^\*deleting |^>f' /tmp/changes.txt | sed \
