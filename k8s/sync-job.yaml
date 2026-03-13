@@ -14,39 +14,60 @@ spec:
         - -c
         - |
           set -e
+
           # 1. Install dependencies
           apk add --no-cache git rsync openssh-client
 
-          # 2. Setup SSH Key
+          # 2. Setup SSH key
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-          # 3. Clone the repo
-          echo "Cloning repository..."
-          git clone --depth 1 git@github.com:Rajp1011/PFHBE-Internal.git /tmp/build-repo
-
-          # 4. Prepare Audit Log
+          # 3. Define paths
+          REPO_URL="git@github.com:Rajp1011/PFHBE-Internal.git"
+          REPO_DIR="/mnt/pvc/.repo-cache/PFHBE-Internal"
+          SRC_DIR="$REPO_DIR/Internal"
+          DST_DIR="/mnt/pvc/GEService/Internal"
           AUDIT_LOG="/mnt/pvc/GEService/sync_audit.log"
           TIMESTAMP=$(date -u "+%Y-%m-%d %H:%M:%S UTC")
 
-          mkdir -p /mnt/pvc/GEService/Internal
+          # 4. Ensure folders exist
+          mkdir -p /mnt/pvc/.repo-cache
+          mkdir -p "$DST_DIR"
+          mkdir -p /mnt/pvc/GEService
 
-          echo "-------------------------------------------" >> $AUDIT_LOG
-          echo "Sync Started: $TIMESTAMP" >> $AUDIT_LOG
+          # 5. Clone only first time, then reuse local cached repo
+          if [ ! -d "$REPO_DIR/.git" ]; then
+            echo "Repo cache not found. Doing first-time clone..."
+            git clone --depth 1 "$REPO_URL" "$REPO_DIR"
+          else
+            echo "Using existing repo cache. Fetching latest changes..."
+            cd "$REPO_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+          fi
 
-          # 5. Smart Sync
+          # 6. Prepare audit log
+          echo "-------------------------------------------" >> "$AUDIT_LOG"
+          echo "Sync Started: $TIMESTAMP" >> "$AUDIT_LOG"
+
+          # 7. Sync only changed files using size + modified time
           echo "Starting sync for GEService..."
-          rsync -avi --delete /tmp/build-repo/Internal/ /mnt/pvc/GEService/Internal/ > /tmp/changes.txt
+          rsync -rvi --delete --omit-dir-times "$SRC_DIR/" "$DST_DIR/" > /tmp/changes.txt
 
-          # 6. Format Audit Log
-          grep -E '>f|\*deleting' /tmp/changes.txt | sed \
-            -e 's/>f+++++++/[ ADDED   ]/g' \
-            -e 's/>f.st....../[ UPDATED ]/g' \
-            -e 's/\*deleting  /[ DELETED ]/g' >> $AUDIT_LOG
+          # 8. Write only added / updated / deleted entries to audit log
+          grep -E '^\*deleting |^>f' /tmp/changes.txt | sed \
+            -e 's/^>f+++++++++ /[ ADDED   ] /' \
+            -e 's/^>f.* /[ UPDATED ] /' \
+            -e 's/^\*deleting /[ DELETED ] /' >> "$AUDIT_LOG" || true
 
-          echo "Sync Finished Successfully" >> $AUDIT_LOG
+          echo "Sync Finished Successfully" >> "$AUDIT_LOG"
+
+          # 9. Print latest sync summary in job logs too
+          echo "===== SYNC AUDIT SUMMARY ====="
+          tail -n 50 "$AUDIT_LOG" || true
+
           echo "Sync Complete!"
         env:
         - name: SSH_KEY
