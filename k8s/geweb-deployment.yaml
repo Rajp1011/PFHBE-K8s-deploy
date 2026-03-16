@@ -51,7 +51,7 @@ spec:
 
       containers:
       - name: ge-web-container
-        image: ghcr.io/rajp1011/pfhbe/geweb:v8.0.2
+        image: ghcr.io/rajp1011/pfhbe/geweb:v9.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -68,7 +68,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v8.0.2"
+          value: "pfh-kubernetes@v9.0.0"
         - name: SENTRY_SERVER_NAME
           value: "ge-web"
 
