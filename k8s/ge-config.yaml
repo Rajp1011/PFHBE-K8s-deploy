@@ -24,7 +24,7 @@ spec:
       - name: ghcr-pull-secret
       containers:
       - name: config
-        image: ghcr.io/rajp1011/pfhbe/geconfig:v8.0.2
+        image: ghcr.io/rajp1011/pfhbe/geconfig:v9.0.0
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
         args:
@@ -44,7 +44,7 @@ spec:
             # Ensure permissions are correct for the game server
             # chmod -R 777 /mnt
 
-            echo "geconfig=v8.0.2 $(date -u)" >> /mnt/.geconfig_version.txt            
+            echo "geconfig=v9.0.0 $(date -u)" >> /mnt/.geconfig_version.txt            
             echo "Sync complete."
         volumeMounts:
         - name: ge-config-volume
