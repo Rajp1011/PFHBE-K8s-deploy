@@ -28,17 +28,15 @@ kubectl apply -f $K8S_DIR/ge-pvc.yaml -n $NAMESPACE
 echo "Waiting ${WAIT_STORAGE}s for Azure File Share binding..."
 sleep $WAIT_STORAGE
 
-# [2/4] CONFIG SEEDING
+# [2/4] CONFIG SEEDING - Docker Config Image from GHCR 
+
 echo -e "\n[2/4] Seeding Configuration..."
 kubectl delete job ge-config -n $NAMESPACE --ignore-not-found
 kubectl apply -f $K8S_DIR/ge-config.yaml -n $NAMESPACE
 echo "Waiting for Config Job to complete..."
 kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
-# kubectl delete job gepools-config -n $NAMESPACE --ignore-not-found
-# kubectl apply -f $K8S_DIR/gepools-config.yaml -n $NAMESPACE
-# echo "Waiting for Config Job to complete..."
-# kubectl wait --for=condition=complete job/gepools-config -n $NAMESPACE --timeout=150s
+
 
 # [3/4] DEPLOY EVERYTHING ELSE
 echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
