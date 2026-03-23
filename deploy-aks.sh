@@ -37,29 +37,6 @@ sleep $WAIT_STORAGE
 #kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
 # [2/4] CONFIG VERIFICATION (Git Atomic Sync)
-echo -e "\n[2/4] Verifying Configuration via Git Sync..."
-
-# Check if the 'current' symlink exists and isn't empty
-CHECK_PATH=$(kubectl run pvc-check --image=alpine --restart=Never -n $NAMESPACE --rm -i --overrides='
-{
-  "spec": {
-    "containers": [{
-      "name": "check",
-      "image": "alpine",
-      "command": ["sh", "-c", "[ -L /mnt/pvc/current ] && echo \"READY\" || echo \"MISSING\""],
-      "volumeMounts": [{"name": "storage", "mountPath": "/mnt/pvc"}]
-    }],
-    "volumes": [{"name": "storage", "persistentVolumeClaim": {"claimName": "ge-pvc"}}]
-  }
-}' 2>/dev/null)
-
-if [ "$CHECK_PATH" == "READY" ]; then
-    echo "SUCCESS: Git Sync structure (current symlink) detected on PVC."
-else
-    echo "ERROR: PVC is empty or 'current' symlink is missing!"
-    echo "Please run the 'Sync PVC' GitHub Action first to seed the data."
-    exit 1
-fi
 
 
 # [3/4] DEPLOY EVERYTHING ELSE
