@@ -65,6 +65,11 @@ spec:
             cpu: "250m"
             memory: "1024Mi"
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: GE_SHARD
           value: "1"
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
@@ -108,7 +113,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEService/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -181,6 +186,11 @@ spec:
             cpu: "250m"
             memory: "1024Mi"
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: GE_SHARD
           value: "2"
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
@@ -224,7 +234,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEService/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -297,6 +307,11 @@ spec:
             cpu: "250m"
             memory: "1024Mi"
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: GE_SHARD
           value: "3"
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
@@ -340,7 +355,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEService/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -413,6 +428,11 @@ spec:
             cpu: "250m"
             memory: "1024Mi"
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: GE_SHARD
           value: "4"
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
@@ -456,7 +476,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEService/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -529,6 +549,11 @@ spec:
             cpu: "250m"
             memory: "1024Mi"
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: GE_SHARD
           value: "5"
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
@@ -572,7 +597,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEService/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt

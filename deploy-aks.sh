@@ -8,17 +8,15 @@ K8S_DIR="k8s"
 WAIT_STORAGE=15
 
 echo "========================================================="
-echo "== AKS BASH DEPLOYMENT: $NAMESPACE"
+echo "== AKS UNIVERSAL DEPLOYMENT: $NAMESPACE"
 echo "========================================================="
 
 # [0/4] AKS CONNECTION CHECK
 echo "Checking AKS connection..."
-CURRENT_CONTEXT=$(kubectl config current-context)
-if [ $? -ne 0 ]; then
+if ! kubectl config current-context >/dev/null 2>&1; then
     echo "ERROR: Not connected to AKS. Run 'az aks get-credentials' first."
     exit 1
 fi
-echo "Using context: $CURRENT_CONTEXT"
 
 # [1/4] INFRASTRUCTURE (Secrets & Storage)
 echo -e "\n[1/4] Applying Storage and Secrets..."
@@ -28,18 +26,10 @@ kubectl apply -f $K8S_DIR/ge-pvc.yaml -n $NAMESPACE
 echo "Waiting ${WAIT_STORAGE}s for Azure File Share binding..."
 sleep $WAIT_STORAGE
 
-# [2/4] CONFIG SEEDING - Docker Config Image from GHCR 
-
-#echo -e "\n[2/4] Seeding Configuration..."
-#kubectl delete job ge-config -n $NAMESPACE --ignore-not-found
-#kubectl apply -f $K8S_DIR/ge-config.yaml -n $NAMESPACE
-#echo "Waiting for Config Job to complete..."
-#kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
-
-# [2/4] CONFIG VERIFICATION (Symlink Resolution)
+# [2/4] CONFIG RESOLUTION & WHITEBOARD UPDATE
 echo -e "\n[2/4] Resolving latest release path from PVC..."
 
-# This command follows the symlink and removes the '/mnt/pvc/' prefix
+# This command follows the symlink and extracts the real folder name
 REAL_PATH=$(kubectl run get-path --image=alpine --rm -i --restart=Never -n $NAMESPACE --overrides='
 {
   "spec": {
@@ -54,8 +44,13 @@ REAL_PATH=$(kubectl run get-path --image=alpine --rm -i --restart=Never -n $NAME
 
 if [[ $REAL_PATH == releases/GE-* ]]; then
     echo "SUCCESS: Found Real Path: $REAL_PATH"
-    # Update YAMLs to use the real path instead of the symlink 'current'
-    sed -i "s|subPath: current/|subPath: $REAL_PATH/|g" $K8S_DIR/*.yaml
+    
+    # UPDATE THE CONFIGMAP (The Whiteboard)
+    # This command creates it if it's missing, or updates it if it exists.
+    echo "Updating ConfigMap 'ge-config-version' with path: $REAL_PATH"
+    kubectl create configmap ge-config-version \
+      --from-literal=path="$REAL_PATH" \
+      -n $NAMESPACE -o yaml --dry-run=client | kubectl apply -f -
 else
     echo "ERROR: Could not resolve symlink. Path detected: '$REAL_PATH'"
     exit 1
@@ -63,35 +58,28 @@ fi
 
 # [3/4] DEPLOY EVERYTHING ELSE
 echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
-# Using a single apply for the rest to be efficient
+# Since YAMLs are now universal (using subPathExpr), we just apply them as-is
 kubectl apply -f $K8S_DIR/redis-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/redis-service.yaml -n $NAMESPACE
-sleep $WAIT_STORAGE
+sleep 5
+
 kubectl apply -f $K8S_DIR/geservice-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geservice-hpa.yaml -n $NAMESPACE
-sleep $WAIT_STORAGE
-sleep $WAIT_STORAGE
+sleep 5
+
 kubectl apply -f $K8S_DIR/geweb-deployment.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-service.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/geweb-hpa.yaml -n $NAMESPACE
-sleep $WAIT_STORAGE
-sleep $WAIT_STORAGE
+
 kubectl apply -f $K8S_DIR/ge-ingress.yaml -n $NAMESPACE
 
 # [4/4] STATUS
 echo -e "\n[4/4] FINAL STATUS"
 echo "---------------------------------------------------------"
-
-# Revert YAMLs back to 'current/' so your local folder stays clean for Git
-sed -i "s|subPath: $REAL_PATH/|subPath: current/|g" $K8S_DIR/*.yaml
-
 kubectl get pods -n $NAMESPACE
 
-echo "GE-Web Ingress URL > http://4.248.65.130/swagger/index.html "
-echo "GE-Service1 Ingress URL > http://4.248.65.130/shard1/swagger/index.html "
-echo "GE-Service2 Ingress URL > http://4.248.65.130/shard2/swagger/index.html "
-echo "GE-Service3 Ingress URL > http://4.248.65.130/shard3/swagger/index.html "
-echo "GE-Service4 Ingress URL > http://4.248.65.130/shard4/swagger/index.html "
-echo "GE-Service5 Ingress URL > http://4.248.65.130/shard5/swagger/index.html "
-echo -e "\nUpdated..! Wait couple more seconds to restart..."
+echo -e "\nDeployment complete. Everything is now pointing to: $REAL_PATH"
+echo "GE-Web Ingress URL > http://4.248.65.130/swagger/index.html"
+
+echo "\n========================================================="

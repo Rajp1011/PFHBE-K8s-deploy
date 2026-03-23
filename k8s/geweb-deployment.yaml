@@ -56,6 +56,11 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: ACTIVE_RELEASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ge-config-version
+              key: path
         - name: COMPlus_ThreadPool_ForceMinWorkerThreads
           value: "100"
         - name: COMPlus_gcServer
@@ -134,7 +139,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEWeb/Internal
+          subPathExpr: $(ACTIVE_RELEASE_PATH)/GEWeb/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
