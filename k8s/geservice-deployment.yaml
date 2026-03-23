@@ -50,20 +50,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /mnt
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEService/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEService/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting service."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+      
       containers:
       - name: ge-service-container
         image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
@@ -121,7 +108,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEService/Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -179,20 +166,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /mnt
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEService/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEService/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting service."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+      
       containers:
       - name: ge-service-container
         image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
@@ -250,7 +224,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEService/Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -308,20 +282,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /mnt
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEService/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEService/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting service."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+      
       containers:
       - name: ge-service-container
         image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
@@ -379,7 +340,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEService/Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -437,20 +398,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /mnt
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEService/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEService/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting service."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+      
       containers:
       - name: ge-service-container
         image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
@@ -508,7 +456,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEService/Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -566,20 +514,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /mnt
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEService/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEService/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting service."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+      
       containers:
       - name: ge-service-container
         image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
@@ -637,7 +572,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEService/Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt

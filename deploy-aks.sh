@@ -37,7 +37,30 @@ sleep $WAIT_STORAGE
 #kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
 # [2/4] CONFIG VERIFICATION (Git Atomic Sync)
+echo -e "\n[2/4] Resolving latest release path from PVC..."
 
+# This part extracts the real folder from the Azure XSym file
+# It finds the line starting with /mnt/pvc/releases/ and cleans it up
+REAL_PATH=$(kubectl run get-path --image=alpine --rm -i --restart=Never -n $NAMESPACE --overrides='
+{
+  "spec": {
+    "containers": [{
+      "name": "c", "image": "alpine", 
+      "command": ["sh", "-c", "cat /mnt/pvc/current | grep -o \"releases/GE-[^\"]*\""],
+      "volumeMounts": [{"name": "v", "mountPath": "/mnt/pvc"}]
+    }],
+    "volumes": [{"name": "v", "persistentVolumeClaim": {"claimName": "ge-pvc"}}]
+  }
+}' 2>/dev/null | tr -d '\r')
+
+if [[ $REAL_PATH == releases/GE-* ]]; then
+    echo "SUCCESS: Found Real Path: $REAL_PATH"
+    # Update YAMLs to use the real path instead of the symlink 'current'
+    sed -i "s|subPath: current/|subPath: $REAL_PATH/|g" $K8S_DIR/*.yaml
+else
+    echo "ERROR: Could not find a valid release folder in 'current' file!"
+    exit 1
+fi
 
 # [3/4] DEPLOY EVERYTHING ELSE
 echo -e "\n[3/4] Deploying Redis, Shards, and Web..."
@@ -60,6 +83,10 @@ kubectl apply -f $K8S_DIR/ge-ingress.yaml -n $NAMESPACE
 # [4/4] STATUS
 echo -e "\n[4/4] FINAL STATUS"
 echo "---------------------------------------------------------"
+
+# Revert YAMLs back to 'current/' so your local folder stays clean for Git
+sed -i "s|subPath: $REAL_PATH/|subPath: current/|g" $K8S_DIR/*.yaml
+
 kubectl get pods -n $NAMESPACE
 
 echo "GE-Web Ingress URL > http://4.248.65.130/swagger/index.html "

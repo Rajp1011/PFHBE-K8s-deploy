@@ -43,22 +43,7 @@ spec:
             chmod -R 777 /mnt/GELogs
         volumeMounts:
         - name: ge-service-config-volume
-          mountPath: /mnt
-
-      - name: wait-for-config
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEWeb/Internal..."
-            until [ -d "/mnt/releases/GE-20260323_145709/GEWeb/Internal" ]; do
-              sleep 2
-            done
-            echo "Config found. Starting GEWeb."
-        volumeMounts:
-        - name: ge-service-config-volume
-          mountPath: /mnt
+          mountPath: /mnt      
 
       - name: wait-for-redis
         image: busybox:latest
@@ -149,7 +134,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: releases/GE-20260323_145709/GEWeb/Internal
+          subPath: current/GEWeb/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
