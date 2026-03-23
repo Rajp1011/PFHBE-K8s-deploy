@@ -56,8 +56,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt to be ready..."
-            while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
+            echo "Waiting for config at /mnt/current/GEService/Internal..."
+            until [ -d "/mnt/current/GEService/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting service."
@@ -121,7 +121,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -185,8 +185,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt to be ready..."
-            while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
+            echo "Waiting for config at /mnt/current/GEService/Internal..."
+            until [ -d "/mnt/current/GEService/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting service."
@@ -250,7 +250,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -314,8 +314,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt to be ready..."
-            while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
+            echo "Waiting for config at /mnt/current/GEService/Internal..."
+            until [ -d "/mnt/current/GEService/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting service."
@@ -379,7 +379,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -443,8 +443,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt to be ready..."
-            while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
+            echo "Waiting for config at /mnt/current/GEService/Internal..."
+            until [ -d "/mnt/current/GEService/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting service."
@@ -508,7 +508,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
@@ -572,8 +572,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for /mnt to be ready..."
-            while [ -z "$(ls -A /mnt 2>/dev/null)" ]; do
+            echo "Waiting for config at /mnt/current/GEService/Internal..."
+            until [ -d "/mnt/current/GEService/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting service."
@@ -637,7 +637,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: Internal
+          subPath: current/GEService/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt

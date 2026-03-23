@@ -45,6 +45,21 @@ spec:
         - name: ge-service-config-volume
           mountPath: /mnt
 
+      - name: wait-for-config
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Waiting for config at /mnt/current/GEWeb/Internal..."
+            until [ -d "/mnt/current/GEWeb/Internal" ]; do
+              sleep 2
+            done
+            echo "Config found. Starting GEWeb."
+        volumeMounts:
+        - name: ge-service-config-volume
+          mountPath: /mnt
+
       - name: wait-for-redis
         image: busybox:latest
         command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']  
@@ -132,6 +147,10 @@ spec:
             memory: "512Mi"
 
         volumeMounts:
+        - name: ge-service-config-volume
+          mountPath: /app/Internal
+          subPath: current/GEWeb/Internal
+          readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
           readOnly: false
