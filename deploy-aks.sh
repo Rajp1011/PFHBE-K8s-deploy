@@ -36,29 +36,28 @@ sleep $WAIT_STORAGE
 #echo "Waiting for Config Job to complete..."
 #kubectl wait --for=condition=complete job/ge-config -n $NAMESPACE --timeout=100s
 
-# [2/4] CONFIG VERIFICATION (Git Atomic Sync)
+# [2/4] CONFIG VERIFICATION (Symlink Resolution)
 echo -e "\n[2/4] Resolving latest release path from PVC..."
 
-# This part extracts the real folder from the Azure XSym file
-# It finds the line starting with /mnt/pvc/releases/ and cleans it up
+# This command follows the symlink and removes the '/mnt/pvc/' prefix
 REAL_PATH=$(kubectl run get-path --image=alpine --rm -i --restart=Never -n $NAMESPACE --overrides='
 {
   "spec": {
     "containers": [{
       "name": "c", "image": "alpine", 
-      "command": ["sh", "-c", "cat /mnt/pvc/current | grep -o \"releases/GE-[^\"]*\""],
+      "command": ["sh", "-c", "readlink -f /mnt/pvc/current | sed \"s|/mnt/pvc/||\""],
       "volumeMounts": [{"name": "v", "mountPath": "/mnt/pvc"}]
     }],
     "volumes": [{"name": "v", "persistentVolumeClaim": {"claimName": "ge-pvc"}}]
   }
-}' 2>/dev/null | tr -d '\r')
+}' 2>/dev/null | tr -d '\r' | grep "releases/GE-")
 
 if [[ $REAL_PATH == releases/GE-* ]]; then
     echo "SUCCESS: Found Real Path: $REAL_PATH"
     # Update YAMLs to use the real path instead of the symlink 'current'
     sed -i "s|subPath: current/|subPath: $REAL_PATH/|g" $K8S_DIR/*.yaml
 else
-    echo "ERROR: Could not find a valid release folder in 'current' file!"
+    echo "ERROR: Could not resolve symlink. Path detected: '$REAL_PATH'"
     exit 1
 fi
 
