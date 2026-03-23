@@ -51,8 +51,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Waiting for config at /mnt/current/GEWeb/Internal..."
-            until [ -d "/mnt/current/GEWeb/Internal" ]; do
+            echo "Waiting for config at /mnt/releases/GE-20260323_145709/GEWeb/Internal..."
+            until [ -d "/mnt/releases/GE-20260323_145709/GEWeb/Internal" ]; do
               sleep 2
             done
             echo "Config found. Starting GEWeb."
@@ -149,7 +149,7 @@ spec:
         volumeMounts:
         - name: ge-service-config-volume
           mountPath: /app/Internal
-          subPath: current/GEWeb/Internal
+          subPath: releases/GE-20260323_145709/GEWeb/Internal
           readOnly: true
         - name: ge-service-config-volume
           mountPath: /mnt
