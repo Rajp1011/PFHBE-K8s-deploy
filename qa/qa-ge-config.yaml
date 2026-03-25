@@ -34,8 +34,6 @@ spec:
               set -e
               echo "Starting smart sync..."
 
-              mkdir -p /mnt/Internal
-
               rsync -av --delete --exclude='GELogs/' /config/GE/ /mnt/GE/
 
               echo "geconfig=v9.0.7 $(date -u)" >> /mnt/.geconfig_version.txt

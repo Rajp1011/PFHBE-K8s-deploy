@@ -20,7 +20,7 @@ fi
 
 # [1/4] INFRASTRUCTURE (Secrets & Storage)
 echo -e "\n[1/4] Applying Storage and Secrets..."
-#kubectl apply -f $K8S_DIR/sentry-secret.yaml -n $NAMESPACE
+kubectl apply -f $K8S_DIR/sentry-secret.yaml -n $NAMESPACE
 kubectl apply -f $K8S_DIR/qa-ge-pvc.yaml -n $NAMESPACE
 
 echo "Waiting ${WAIT_STORAGE}s for Azure File Share binding..."
