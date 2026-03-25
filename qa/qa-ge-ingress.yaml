@@ -9,10 +9,9 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: qa-ge.example.com
-      http:
+    - http:
         paths:
-          - path: /shard1(/|$)(.*)
+          - path: /qa/shard1(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -20,7 +19,7 @@ spec:
                 port:
                   number: 8080
 
-          - path: /shard2(/|$)(.*)
+          - path: /qa/shard2(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -28,7 +27,7 @@ spec:
                 port:
                   number: 8080
 
-          - path: /shard3(/|$)(.*)
+          - path: /qa/shard3(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -36,7 +35,7 @@ spec:
                 port:
                   number: 8080
 
-          - path: /shard4(/|$)(.*)
+          - path: /qa/shard4(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -44,7 +43,7 @@ spec:
                 port:
                   number: 8080
 
-          - path: /shard5(/|$)(.*)
+          - path: /qa/shard5(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
@@ -52,7 +51,7 @@ spec:
                 port:
                   number: 8080
 
-          - path: /()(.*)
+          - path: /qa(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
