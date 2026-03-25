@@ -1,0 +1,45 @@
+# -----------------------------------------------------------------
+# Redis Deployment:
+# -----------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master-qa
+  namespace: ge-qa
+  labels:
+    app: redis
+    role: master
+    env: qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      containers:
+        - name: master
+          image: redis:6.2-alpine
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"

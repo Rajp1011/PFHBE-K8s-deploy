@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-web-qa
+  namespace: ge-qa
+  labels:
+    app: ge-web
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-web
+    env: qa
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

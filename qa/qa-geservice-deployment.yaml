@@ -1,0 +1,658 @@
+# -----------------------------------------------------------
+# GE Service QA: Deployments Only (1-5)
+# -----------------------------------------------------------
+
+# -------- GEService 1 --------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-service-1-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service
+    shard: "1"
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-service
+      shard: "1"
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-service
+        shard: "1"
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEService-1
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEService/Internal to be ready..."
+              until [ -d /mnt/GE/GEService/Internal ] && [ "$(ls -A /mnt/GE/GEService/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+      containers:
+        - name: ge-service-container
+          image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          env:           
+            - name: GE_SHARD
+              value: "1"
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-service-1-qa"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEService/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa
+---
+# -------- GEService 2 --------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-service-2-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service
+    shard: "2"
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-service
+      shard: "2"
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-service
+        shard: "2"
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEService-2
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEService/Internal to be ready..."
+              until [ -d /mnt/GE/GEService/Internal ] && [ "$(ls -A /mnt/GE/GEService/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+      containers:
+        - name: ge-service-container
+          image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          env:
+            - name: GE_SHARD
+              value: "2"
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-service-2-qa"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEService/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa
+---
+# -------- GEService 3 --------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-service-3-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service
+    shard: "3"
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-service
+      shard: "3"
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-service
+        shard: "3"
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEService-3
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEService/Internal to be ready..."
+              until [ -d /mnt/GE/GEService/Internal ] && [ "$(ls -A /mnt/GE/GEService/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+      containers:
+        - name: ge-service-container
+          image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          env:
+            - name: GE_SHARD
+              value: "3"
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-service-3-qa"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEService/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa
+---
+# -------- GEService 4 --------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-service-4-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service
+    shard: "4"
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-service
+      shard: "4"
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-service
+        shard: "4"
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEService-4
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEService/Internal to be ready..."
+              until [ -d /mnt/GE/GEService/Internal ] && [ "$(ls -A /mnt/GE/GEService/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+      containers:
+        - name: ge-service-container
+          image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          env:
+            - name: GE_SHARD
+              value: "4"
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-service-4-qa"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEService/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa
+---
+# -------- GEService 5 --------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-service-5-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service
+    shard: "5"
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-service
+      shard: "5"
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-service
+        shard: "5"
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEService-5
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEService/Internal to be ready..."
+              until [ -d /mnt/GE/GEService/Internal ] && [ "$(ls -A /mnt/GE/GEService/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+      containers:
+        - name: ge-service-container
+          image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          env:
+            - name: GE_SHARD
+              value: "5"
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-service-5-qa"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEService/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa

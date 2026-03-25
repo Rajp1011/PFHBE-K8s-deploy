@@ -1,0 +1,108 @@
+# -----------------------------------------------------------
+# GE Service QA: Services Only (1-5)
+# -----------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-service-1-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service-1
+    shard: "1"
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-service
+    shard: "1"
+    env: qa
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-service-2-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service-2
+    shard: "2"
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-service
+    shard: "2"
+    env: qa
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-service-3-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service-3
+    shard: "3"
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-service
+    shard: "3"
+    env: qa
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-service-4-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service-4
+    shard: "4"
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-service
+    shard: "4"
+    env: qa
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ge-service-5-qa
+  namespace: ge-qa
+  labels:
+    app: ge-service-5
+    shard: "5"
+    env: qa
+spec:
+  type: ClusterIP
+  selector:
+    app: ge-service
+    shard: "5"
+    env: qa
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080

@@ -1,0 +1,19 @@
+# -----------------------------------------------------------------
+# Redis Service:
+# -----------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-qa
+  namespace: ge-qa
+  labels:
+    app: redis
+    env: qa
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    env: qa

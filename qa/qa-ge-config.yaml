@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ge-config-qa
+  namespace: ge-qa
+  labels:
+    app: ge-config
+    env: qa
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: ge-config
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: config
+          image: ghcr.io/rajp1011/pfhbe/gedata:v1.0.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              echo "Starting smart sync..."
+
+              mkdir -p /mnt/Internal
+
+              rsync -av --delete --exclude='GELogs/' /config/GE/ /mnt/GE/
+
+              echo "geconfig=v9.0.7 $(date -u)" >> /mnt/.geconfig_version.txt
+              echo "Sync complete."
+          volumeMounts:
+            - name: ge-config-volume
+              mountPath: /mnt
+      volumes:
+        - name: ge-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa

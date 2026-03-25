@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ge-main-ingress-qa
+  namespace: ge-qa
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: qa-ge.example.com
+      http:
+        paths:
+          - path: /shard1(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-service-1-qa
+                port:
+                  number: 8080
+
+          - path: /shard2(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-service-2-qa
+                port:
+                  number: 8080
+
+          - path: /shard3(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-service-3-qa
+                port:
+                  number: 8080
+
+          - path: /shard4(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-service-4-qa
+                port:
+                  number: 8080
+
+          - path: /shard5(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-service-5-qa
+                port:
+                  number: 8080
+
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-web-qa
+                port:
+                  number: 80

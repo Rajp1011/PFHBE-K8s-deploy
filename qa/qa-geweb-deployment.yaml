@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-web-deployment-qa
+  namespace: ge-qa
+  labels:
+    app: ge-web
+    env: qa
+spec:
+  replicas: 1
+  minReadySeconds: 7
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ge-web
+      env: qa
+  template:
+    metadata:
+      labels:
+        app: ge-web
+        env: qa
+    spec:
+      nodeSelector:
+        agentpool: qaserver
+      tolerations:
+        - key: "sku"
+          operator: "Equal"
+          value: "qatest"
+          effect: "NoSchedule"
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      initContainers:
+        - name: init-gelogs
+          image: busybox:1.36
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /mnt/GELogs/GEWeb
+              chmod -R 777 /mnt/GELogs
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-config
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for /mnt/GE/GEWeb/Internal to be ready..."
+              until [ -d /mnt/GE/GEWeb/Internal ] && [ "$(ls -A /mnt/GE/GEWeb/Internal 2>/dev/null)" ]; do
+                sleep 2
+              done
+              echo "Config found. Starting service."
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /mnt
+        - name: wait-for-redis
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - until nc -z redis-qa 6379; do echo waiting for redis; sleep 2; done;
+      containers:
+        - name: ge-web-container
+          image: ghcr.io/rajp1011/pfhbe/geweb:v9.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: COMPlus_ThreadPool_ForceMinWorkerThreads
+              value: "100"
+            - name: COMPlus_gcServer
+              value: "1"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secrets
+                  key: SENTRY_DSN
+            - name: SENTRY_ENVIRONMENT
+              value: "qa"
+            - name: SENTRY_RELEASE
+              value: "pfh-kubernetes-qa@v9.0.7"
+            - name: SENTRY_SERVER_NAME
+              value: "ge-web-qa"
+            - name: REDIS_HOST_OVERRIDE
+              value: "redis-qa:6379"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "QA"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+            - name: PongGEServiceUrls__PlayGame
+              value: "http://ge-service-1-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__StartGame
+              value: "http://ge-service-1-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__PlayGame1
+              value: "http://ge-service-1-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__PlayGame2
+              value: "http://ge-service-2-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__PlayGame3
+              value: "http://ge-service-3-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__PlayGame4
+              value: "http://ge-service-4-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__PlayGame5
+              value: "http://ge-service-5-qa:8080/api/GE/PlayGame"
+            - name: PongGEServiceUrls__StartGame1
+              value: "http://ge-service-1-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__StartGame2
+              value: "http://ge-service-2-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__StartGame3
+              value: "http://ge-service-3-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__StartGame4
+              value: "http://ge-service-4-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__StartGame5
+              value: "http://ge-service-5-qa:8080/api/GE/StartGame"
+            - name: PongGEServiceUrls__GetVersion
+              value: "http://ge-service-1-qa:8080/api/GE/GetVersion"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "300m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: ge-service-config-volume
+              mountPath: /app/Internal
+              subPath: GE/GEWeb/Internal
+              readOnly: true
+            - name: ge-service-config-volume
+              mountPath: /mnt
+              readOnly: false
+      volumes:
+        - name: ge-service-config-volume
+          persistentVolumeClaim:
+            claimName: ge-pvc-qa
