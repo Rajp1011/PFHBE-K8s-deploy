@@ -56,6 +56,6 @@ echo -e "\n[4/4] FINAL STATUS"
 echo "---------------------------------------------------------"
 kubectl get pods -n $NAMESPACE
 
-#echo "GE-Web Ingress URL > http://4.248.65.130/swagger/index.html"
+echo "For QA>> GE-Web Ingress URL > http://4.248.65.130/qa/swagger/index.html"
 
 echo "\n========================================================="

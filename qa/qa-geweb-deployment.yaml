@@ -67,7 +67,7 @@ spec:
             - until nc -z redis-qa 6379; do echo waiting for redis; sleep 2; done;
       containers:
         - name: ge-web-container
-          image: ghcr.io/rajp1011/pfhbe/geweb:v9.0.9
+          image: ghcr.io/rajp1011/pfhbe/geweb:v10.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -84,7 +84,7 @@ spec:
             - name: SENTRY_ENVIRONMENT
               value: "qa"
             - name: SENTRY_RELEASE
-              value: "pfh-kubernetes-qa@v9.0.9"
+              value: "pfh-kubernetes-qa@v10.0.0"
             - name: SENTRY_SERVER_NAME
               value: "ge-web-qa"
             - name: REDIS_HOST_OVERRIDE
