@@ -53,7 +53,7 @@ spec:
       
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+        image: ghcr.io/rajp1011/pfhbe/geservice:v10.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -84,7 +84,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v9.0.7"
+          value: "pfh-kubernetes@v10.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-1"
 
@@ -174,7 +174,7 @@ spec:
       
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+        image: ghcr.io/rajp1011/pfhbe/geservice:v10.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -205,7 +205,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v9.0.7"
+          value: "pfh-kubernetes@v10.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-2"
 
@@ -295,7 +295,7 @@ spec:
       
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+        image: ghcr.io/rajp1011/pfhbe/geservice:v10.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -326,7 +326,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v9.0.7"
+          value: "pfh-kubernetes@v10.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-3"
 
@@ -416,7 +416,7 @@ spec:
       
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+        image: ghcr.io/rajp1011/pfhbe/geservice:v10.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -447,7 +447,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v9.0.7"
+          value: "pfh-kubernetes@v10.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-4"
 
@@ -537,7 +537,7 @@ spec:
       
       containers:
       - name: ge-service-container
-        image: ghcr.io/rajp1011/pfhbe/geservice:v9.0.7
+        image: ghcr.io/rajp1011/pfhbe/geservice:v10.0.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -568,7 +568,7 @@ spec:
         - name: SENTRY_ENVIRONMENT
           value: "development"
         - name: SENTRY_RELEASE
-          value: "pfh-kubernetes@v9.0.7"
+          value: "pfh-kubernetes@v10.0.2"
         - name: SENTRY_SERVER_NAME
           value: "ge-service-5"
 
